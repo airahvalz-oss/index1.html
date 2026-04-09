@@ -1,0 +1,773 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library System</title>
+<style>
+/* ===== RESET ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+
+ body {
+  background: url("g1.jpg") no-repeat center center fixed;
+  background-size: cover;
+  overflow-x: hidden;
+}
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  z-index: -1;
+}
+
+
+/* ===== LOGIN SCREEN ===== */
+.login-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.9);
+   background: url("g1.jpg") no-repeat center center fixed;
+  background-size: cover;
+  overflow-x: hidden;
+}
+
+.login-box {
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  width: 350px;
+}
+
+.login-box h2 {
+  margin-bottom: 25px;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  background: #333;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background: #555;
+}
+
+/* ===== APP WRAPPER ===== */
+.app {
+  display: none;
+}
+
+.app.active {
+  display: block;
+}
+
+/* ===== SIDEBAR - MENU CENTERED ===== */
+.sidebar {
+  width: 200px;
+  background: rgba(255, 255, 255, 0.95);
+  border-right: 2px solid black;
+  padding: 20px;
+  position: fixed;
+  left: -200px;
+  top: 0;
+  height: 100%;
+  transition: 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+  z-index: 10;
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  padding: 10px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.sidebar a:hover {
+  background: #eee;
+}
+
+.sidebar a.active {
+  background: #e3f2fd;
+  font-weight: bold;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  position: relative;
+  min-height: 100vh;
+  transition: 0.3s ease;
+  padding: 20px;
+}
+
+.main-content.shift {
+  margin-left: 200px;
+}
+
+/* ===== HAMBURGER ===== */
+.hamburger {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-size: 26px;
+  cursor: pointer;
+  user-select: none;
+  z-index: 11;
+  background: white;
+  border: 2px solid #333;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+/* ===== PAGE CONTENT BOX ===== */
+.page-box {
+  border: 2px solid #333;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 30px;
+  margin-top: 20px;
+  min-height: calc(100vh - 60px);
+}
+
+.page-box h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  text-align: center;
+}
+
+/* ===== DASHBOARD VIEW - CENTER THE BOX ===== */
+#dashboard {
+  min-height: calc(100vh - 40px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+#dashboard.active {
+  display: flex;
+}
+
+/* ===== CENTER BOX - WIDER + PERFECTLY CENTERED ===== */
+.center-box {
+  text-align: center;
+  border: 2px solid black;
+  padding: 80px 100px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  max-width: 900px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+
+.center-box h1 {
+  font-size: 52px;
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+  text-align: center;
+  width: 100%;
+}
+
+.center-box p {
+  font-size: 24px;
+  text-align: center;
+  width: 100%;
+}
+
+/* ===== BROWSE LAYOUT - CATEGORIES ON SIDE ===== */
+.browse-container {
+  display: flex;
+  gap: 20px;
+  min-height: 500px;
+}
+
+.category-sidebar {
+  width: 180px;
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.category-sidebar h3 {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.category-btn {
+  padding: 10px 12px;
+  border: 2px solid #333;
+  background: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.category-btn:hover {
+  background: #f0f0f0;
+}
+
+.category-btn.active {
+  background: #333;
+  color: #fff;
+}
+
+.book-list-container {
+  flex: 1;
+}
+
+/* ===== BOOK CARDS ===== */
+.book-card {
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.book-info {
+  line-height: 1.8;
+}
+
+.book-info div {
+  font-size: 15px;
+}
+
+.status-available {
+  color: #2e7d32;
+  font-weight: bold;
+}
+
+.status-borrowed {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 6px 14px;
+  border: 1px solid #333;
+  background: #fff;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.btn:hover {
+  background: #f0f0f0;
+}
+
+.btn-primary {
+  background: #333;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #555;
+}
+
+.no-books {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-size: 16px;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+}
+
+/* ===== EDIT FORM ===== */
+.edit-form {
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 30px 40px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.form-group label {
+  width: 90px;
+  font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid #333;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+/* ===== LOGOUT ===== */
+#logout h2 {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.logout-container {
+  border: 2px solid #6a5acd;
+  border-radius: 4px;
+  height: calc(100% - 50px);
+  position: relative;
+  min-height: 400px;
+}
+
+.logout-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid #333;
+  border-radius: 12px;
+  padding: 30px 50px;
+  background: #fff;
+  text-align: center;
+}
+
+.logout-modal p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* ===== VIEWS ===== */
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+.browse-container {
+    flex-direction: column;
+  }
+.category-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <h2>Library Login</h2>
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button id="loginBtn">Login</button>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="app" id="app">
+  <!-- Hamburger -->
+  <div class="hamburger" id="hamburger">☰</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <a data-view="dashboard" class="active">Dashboard</a>
+    <a data-view="browse">Browse Books</a>
+    <a data-view="manage">Edit / Add Book</a>
+    <a data-view="logout">Log out</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" id="main">
+
+    <!-- Dashboard View -->
+    <div class="view active" id="dashboard">
+      <div class="center-box">
+        <h1>WELCOME, ADMIN!</h1>
+        <p>Total Books: <span id="totalBooks">0</span></p>
+      </div>
+    </div>
+
+    <!-- Browse Books View -->
+    <div class="view" id="browse">
+      <div class="page-box">
+        <h2>Library Catalog</h2>
+
+        <div class="browse-container">
+          <!-- Category Sidebar -->
+          <div class="category-sidebar">
+            <h3>Categories</h3>
+            <button class="category-btn active" data-category="Elementary">Elementary</button>
+            <button class="category-btn" data-category="Highschool">Highschool</button>
+            <button class="category-btn" data-category="College">College</button>
+          </div>
+
+          <!-- Book List -->
+          <div class="book-list-container">
+            <div id="bookList"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Manage Books View -->
+    <div class="view" id="manage">
+      <div class="page-box">
+        <h2 id="formTitle">Edit / Add Book</h2>
+        <form class="edit-form" id="editForm">
+          <input type="hidden" id="editId">
+
+          <div class="form-group">
+            <label>Title:</label>
+            <input type="text" id="editTitle" required>
+          </div>
+
+          <div class="form-group">
+            <label>Author:</label>
+            <input type="text" id="editAuthor" required>
+          </div>
+
+          <div class="form-group">
+            <label>Category:</label>
+            <select id="editCategory" required>
+              <option value="Elementary">Elementary</option>
+              <option value="Highschool">Highschool</option>
+              <option value="College">College</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Status:</label>
+            <select id="editStatus" required>
+              <option value="Available">Available</option>
+              <option value="Borrowed">Borrowed</option>
+            </select>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+            <button type="button" class="btn" id="cancelBtn">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Logout View -->
+    <div class="view" id="logout">
+      <div class="page-box">
+        <h2>LOG OUT</h2>
+        <div class="logout-container">
+          <div class="logout-modal">
+            <p>Do you want to log out?</p>
+            <button class="btn" id="logoutYes">Yes</button>
+            <button class="btn" id="logoutNo">No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ===== DATA WITH CATEGORIES =====
+let books = [
+  { id: 1, title: 'The Very Hungry Caterpillar', author: 'Eric Carle', category: 'Elementary', status: 'Available' },
+  { id: 2, title: 'Charlotte\'s Web', author: 'E.B. White', category: 'Elementary', status: 'Borrowed' },
+  { id: 3, title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', category: 'Highschool', status: 'Available' },
+  { id: 4, title: '1984', author: 'George Orwell', category: 'Highschool', status: 'Borrowed' },
+  { id: 5, title: 'To Kill a Mockingbird', author: 'Harper Lee', category: 'Highschool', status: 'Available' },
+  { id: 6, title: 'Introduction to Algorithms', author: 'Thomas Cormen', category: 'College', status: 'Available' },
+  { id: 7, title: 'Organic Chemistry', author: 'Paula Bruice', category: 'College', status: 'Borrowed' }
+];
+
+let currentCategory = 'Elementary'; // CHANGED: Default to Elementary since All Books is gone
+let nextId = 8;
+
+const loginScreen = document.getElementById('loginScreen');
+const app = document.getElementById('app');
+const loginBtn = document.getElementById('loginBtn');
+const hamburger = document.getElementById('hamburger');
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const menuItems = document.querySelectorAll('.sidebar a');
+const views = document.querySelectorAll('.view');
+const bookList = document.getElementById('bookList');
+const editForm = document.getElementById('editForm');
+const cancelBtn = document.getElementById('cancelBtn');
+const logoutYes = document.getElementById('logoutYes');
+const logoutNo = document.getElementById('logoutNo');
+const totalBooks = document.getElementById('totalBooks');
+const categoryBtns = document.querySelectorAll('.category-btn');
+const formTitle = document.getElementById('formTitle');
+const saveBtn = document.getElementById('saveBtn');
+
+// ===== LOGIN =====
+loginBtn.addEventListener('click', () => {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  if (user && pass) {
+    loginScreen.style.display = 'none';
+    app.classList.add('active');
+    updateTotalBooks();
+    renderBooks();
+  } else {
+    alert('Please enter username and password');
+  }
+});
+
+function updateTotalBooks() {
+  totalBooks.textContent = books.length;
+}
+
+// ===== HAMBURGER TOGGLE =====
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  main.classList.toggle('shift');
+});
+
+// ===== NAVIGATION - SIDEBAR STAYS OPEN =====
+menuItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const viewName = item.getAttribute('data-view');
+
+    // Clear form when switching to Edit/Add Book
+    if (viewName === 'manage' &&!document.getElementById('editId').value) {
+      editForm.reset();
+      formTitle.textContent = 'Add New Book';
+      saveBtn.textContent = 'Add';
+    }
+
+    switchView(viewName);
+  });
+});
+
+function switchView(viewName) {
+  menuItems.forEach(mi => mi.classList.remove('active'));
+  document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+
+  views.forEach(v => v.classList.remove('active'));
+  document.getElementById(viewName).classList.add('active');
+}
+
+// ===== CATEGORY FILTER =====
+categoryBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    categoryBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentCategory = btn.getAttribute('data-category');
+    renderBooks();
+  });
+});
+
+// ===== RENDER BOOKS - NO MORE ALL BOOKS OPTION =====
+function renderBooks() {
+  const filteredBooks = books.filter(book => book.category === currentCategory);
+
+  if (filteredBooks.length === 0) {
+    bookList.innerHTML = '<div class="no-books">No books found in this category.</div>';
+    return;
+  }
+
+  bookList.innerHTML = '';
+  filteredBooks.forEach(book => {
+    const statusClass = book.status === 'Available'? 'status-available' : 'status-borrowed';
+    bookList.innerHTML += `
+      <div class="book-card" data-id="${book.id}">
+        <div class="book-info">
+          <div><strong>Title:</strong> ${book.title}</div>
+          <div><strong>Author:</strong> ${book.author}</div>
+          <div><strong>Category:</strong> ${book.category}</div>
+          <div><strong>Status:</strong> <span class="${statusClass}">${book.status}</span></div>
+        </div>
+        <div class="actions">
+          <button class="btn edit-btn" data-id="${book.id}">Edit</button>
+          <button class="btn delete-btn" data-id="${book.id}">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// ===== EVENT DELEGATION FOR EDIT/DELETE =====
+bookList.addEventListener('click', (e) => {
+  const editBtn = e.target.closest('.edit-btn');
+  const deleteBtn = e.target.closest('.delete-btn');
+
+  if (editBtn) {
+    const id = parseInt(editBtn.getAttribute('data-id'));
+    editBook(id);
+  }
+
+  if (deleteBtn) {
+    const id = parseInt(deleteBtn.getAttribute('data-id'));
+    deleteBook(id);
+  }
+});
+
+// ===== EDIT BOOK =====
+function editBook(id) {
+  const book = books.find(b => b.id === id);
+  if (!book) return;
+
+  document.getElementById('editId').value = book.id;
+  document.getElementById('editTitle').value = book.title;
+  document.getElementById('editAuthor').value = book.author;
+  document.getElementById('editCategory').value = book.category;
+  document.getElementById('editStatus').value = book.status;
+
+  formTitle.textContent = 'Edit Book Details';
+  saveBtn.textContent = 'Save';
+
+  switchView('manage');
+}
+
+// ===== SAVE - HANDLES BOTH ADD AND EDIT, SAVES TO CORRECT CATEGORY =====
+editForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = document.getElementById('editId').value;
+  const title = document.getElementById('editTitle').value.trim();
+  const author = document.getElementById('editAuthor').value.trim();
+  const category = document.getElementById('editCategory').value;
+  const status = document.getElementById('editStatus').value;
+
+  if (id) {
+    // EDIT EXISTING BOOK
+    const bookIndex = books.findIndex(b => b.id === parseInt(id));
+    if (bookIndex!== -1) {
+      books[bookIndex].title = title;
+      books[bookIndex].author = author;
+      books[bookIndex].category = category;
+      books[bookIndex].status = status;
+      alert('Book updated and saved to ' + category + ' category!');
+    }
+  } else {
+    // ADD NEW BOOK
+    const newBook = {
+      id: nextId++,
+      title: title,
+      author: author,
+      category: category,
+      status: status
+    };
+    books.push(newBook);
+    alert('Book added to ' + category + ' category!');
+  }
+
+  // SWITCH TO THE CATEGORY WHERE IT WAS SAVED
+  currentCategory = category;
+  categoryBtns.forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-category="${category}"]`).classList.add('active');
+
+  updateTotalBooks();
+  renderBooks();
+  editForm.reset();
+  document.getElementById('editId').value = '';
+  switchView('browse');
+});
+
+// ===== CANCEL EDIT =====
+cancelBtn.addEventListener('click', () => {
+  document.getElementById('editId').value = '';
+  editForm.reset();
+  switchView('browse');
+});
+
+// ===== DELETE BOOK - REMOVES FROM LIST =====
+function deleteBook(id) {
+  if (confirm('Delete this book? This will permanently remove it from the list.')) {
+    books = books.filter(b => b.id!== id);
+    renderBooks();
+    updateTotalBooks();
+    alert('Book deleted successfully!');
+  }
+}
+
+// ===== LOGOUT =====
+logoutYes.addEventListener('click', () => {
+  app.classList.remove('active');
+  loginScreen.style.display = 'flex';
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+  sidebar.classList.remove('active');
+  main.classList.remove('shift');
+  switchView('dashboard');
+});
+
+logoutNo.addEventListener('click', () => {
+  switchView('browse');
+});
+</script>
+
+</body>
+</html>
